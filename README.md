@@ -26,33 +26,33 @@
 ## 快速开始
 1. 把新资料放入 `raw/inbox/`。
 2. 执行 ingest：
-   `powershell -ExecutionPolicy Bypass -File scripts/ingest.ps1`
+   `python scripts/ingest.py`
 3. 在 `wiki/sources/` 新来源页基础上补全事实、解读与待解问题。
 4. 视需要更新 `wiki/entities/`、`wiki/concepts/`、`wiki/syntheses/`。
 5. 检查 `wiki/index.md` 与 `wiki/log.md` 是否已反映本次变更。
 6. 执行 lint：
-   `powershell -ExecutionPolicy Bypass -File scripts/lint.ps1`
+   `python scripts/lint_repo.py`
 
 ## 查询工作流
 1. 新建查询：
-   `powershell -ExecutionPolicy Bypass -File scripts/query.ps1 -Title "你的问题"`
+   `python scripts/query.py --title "你的问题"`
 2. 一次性执行“建查询 + 回答沉淀 + lint”：
-   `powershell -ExecutionPolicy Bypass -File scripts/query_and_settle.ps1 -Title "你的问题"`
+   `python scripts/query_and_settle.py --title "你的问题"`
 3. 查询时遵循顺序：先读 `wiki/index.md`，优先读 wiki 页面，再回溯 `raw/`。
 
 ## 常用命令
-```powershell
+```bash
 # ingest 一条 inbox 资料（按文件名排序取第一条）
-powershell -ExecutionPolicy Bypass -File scripts/ingest.ps1
+python scripts/ingest.py
 
 # 新建查询页
-powershell -ExecutionPolicy Bypass -File scripts/query.ps1 -Title "规则一致性检查"
+python scripts/query.py --title "规则一致性检查"
 
 # 查询并沉淀（调用 codex exec）
-powershell -ExecutionPolicy Bypass -File scripts/query_and_settle.ps1 -Title "某个问题"
+python scripts/query_and_settle.py --title "某个问题"
 
 # 仓库 lint（链接、孤儿页、重复页、来源关联、中文规范）
-powershell -ExecutionPolicy Bypass -File scripts/lint.ps1
+python scripts/lint_repo.py
 ```
 
 ## 入口页面

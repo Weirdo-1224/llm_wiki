@@ -12,9 +12,6 @@
 - [查询](queries/)
 
 ## 查询
-- [query-20260407-221102-smoke-test-query.md](queries/query-20260407-221102-smoke-test-query.md)
-- [query-20260407-222918-rules-alignment-check.md](queries/query-20260407-222918-rules-alignment-check.md)
-- [query-20260407-223104-id-heading-check.md](queries/query-20260407-223104-id-heading-check.md)
 - [query-20260408-142623-untitled-query.md](queries/query-20260408-142623-untitled-query.md)
 - [query-20260408-142742-untitled-query.md](queries/query-20260408-142742-untitled-query.md)
 

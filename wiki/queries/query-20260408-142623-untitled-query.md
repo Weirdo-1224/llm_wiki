@@ -18,6 +18,7 @@
 
 ## 所需证据
 - [query-20260408-142742-untitled-query.md](query-20260408-142742-untitled-query.md)
+- [source-0004](../sources/source-0004.md)（主查询所依据的原始来源）
 
 ## 进展记录
 - 2026-04-08: 标记为重复条目，并指向主条目。
