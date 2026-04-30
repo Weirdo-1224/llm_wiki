@@ -1,4 +1,4 @@
-﻿# source-0004: 指南理解
+# source-0004: 指南理解
 ## 元数据
 - id: source-0004
 - title: 指南理解
