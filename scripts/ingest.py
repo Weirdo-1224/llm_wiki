@@ -76,8 +76,6 @@ def main() -> int:
     template_content = re.sub(r"(?m)^- accessed_at:\s*$", f"- accessed_at: {today}", template_content)
     template_content = re.sub(r"(?m)^- tags:\s*$", "- tags: [ingested]", template_content)
 
-    source_path.write_text(template_content, encoding="utf-8")
-
     source_link = f"- [{source_id}](sources/{source_file})"
     index_content = index_path.read_text(encoding="utf-8")
     if source_link not in index_content:
@@ -90,13 +88,16 @@ def main() -> int:
             )
         else:
             index_content = index_content.rstrip() + f"\n\n## 来源\n{source_link}\n"
-        index_path.write_text(index_content, encoding="utf-8")
 
     processed_path = processed_dir / candidate.name
     if processed_path.exists():
         timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         processed_path = processed_dir / f"{timestamp}-{candidate.name}"
     shutil.move(str(candidate), str(processed_path))
+
+    source_path.write_text(template_content, encoding="utf-8")
+    if source_link not in index_path.read_text(encoding="utf-8"):
+        index_path.write_text(index_content, encoding="utf-8")
 
     log_line = f"- 摄取来源: [{source_id}](sources/{source_file})，源文件 `{candidate.name}`。\n"
     with open(log_path, "a", encoding="utf-8") as f:

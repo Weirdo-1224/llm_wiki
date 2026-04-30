@@ -45,7 +45,29 @@ def main() -> int:
         print("Missing script: scripts/lint_repo.py", file=sys.stderr)
         return 1
 
-    # 1) 创建查询页
+    # 1) 先确认 codex 可用，避免失败时留下未沉淀查询页。
+    try:
+        subprocess.run(
+            ["codex", "--version"],
+            cwd=ROOT,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+    except FileNotFoundError:
+        print(
+            "codex exec failed: command not found. Please install and configure Codex CLI.",
+            file=sys.stderr,
+        )
+        return 1
+    except subprocess.CalledProcessError as e:
+        print(
+            f"codex exec failed. Please fix local Codex config and retry. Original error: {e}",
+            file=sys.stderr,
+        )
+        return 1
+
+    # 2) 创建查询页
     result = subprocess.run(
         [sys.executable, str(query_script), "--title", args.title],
         cwd=ROOT,
@@ -58,7 +80,7 @@ def main() -> int:
         return 1
     print(result.stdout, end="")
 
-    # 2) 定位最新查询
+    # 3) 定位最新查询
     queries_dir = ROOT / "wiki" / "queries"
     query_files = sorted(
         [f for f in queries_dir.glob("query-*.md") if f.is_file()],
@@ -71,7 +93,7 @@ def main() -> int:
 
     latest = query_files[0]
 
-    # 3) 调用 codex exec
+    # 4) 调用 codex exec
     prompt = f"""Follow AGENTS.md strictly and complete answer-and-settle workflow:
 1. Read wiki/index.md first.
 2. Focus on this query file: {latest}
@@ -98,7 +120,7 @@ def main() -> int:
         )
         return 1
 
-    # 4) 运行 lint
+    # 5) 运行 lint
     lint_result = subprocess.run(
         [sys.executable, str(lint_script)],
         cwd=ROOT,

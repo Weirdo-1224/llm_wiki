@@ -36,10 +36,9 @@ llm_wiki/
 │   ├── synthesis.md        # 综合模板
 │   └── query.md            # 查询模板
 ├── scripts/                # 自动化脚本
-│   ├── ingest.ps1          # 摄取原始资料到 wiki/sources/
-│   ├── query.ps1           # 新建查询页
-│   ├── query_and_settle.ps1 # 新建查询 + 调用 codex 回答 + lint
-│   ├── lint.ps1            # PowerShell 包装器，调用 Python lint
+│   ├── ingest.py           # 摄取原始资料到 wiki/sources/
+│   ├── query.py            # 新建查询页
+│   ├── query_and_settle.py # 新建查询 + 调用 codex 回答 + lint
 │   └── lint_repo.py        # 核心 lint 逻辑（Python）
 ├── AGENTS.md               # 本文件（AI 代理操作指南）
 └── README.md               # 面向人类贡献者的快速开始指南
@@ -70,8 +69,8 @@ Lint 失败时返回非零退出码；警告不影响退出码，但会打印输
 
 将 `raw/inbox/` 中的原始资料转化为 `wiki/sources/` 中的结构化来源页。
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/ingest.ps1
+```bash
+python scripts/ingest.py
 ```
 
 执行逻辑：
@@ -88,12 +87,12 @@ powershell -ExecutionPolicy Bypass -File scripts/ingest.ps1
 
 记录问题并沉淀答案。
 
-```powershell
+```bash
 # 仅新建查询页
-powershell -ExecutionPolicy Bypass -File scripts/query.ps1 -Title "你的问题"
+python scripts/query.py --title "你的问题"
 
 # 新建查询 + 调用 codex 回答 + 运行 lint（需要本地安装 codex CLI）
-powershell -ExecutionPolicy Bypass -File scripts/query_and_settle.ps1 -Title "你的问题"
+python scripts/query_and_settle.py --title "你的问题"
 ```
 
 查询页命名格式：`query-<yyyyMMdd-HHmmss>-<slug>.md`，存放于 `wiki/queries/`。

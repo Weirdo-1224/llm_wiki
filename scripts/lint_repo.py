@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -63,6 +64,16 @@ def iter_md_links(content: str) -> list[str]:
     return [m.group(1).strip() for m in re.finditer(r"\[[^\]]+\]\(([^)]+)\)", content)]
 
 
+def link_path_part(target: str) -> str:
+    path = target.strip()
+    if path.startswith("<") and ">" in path:
+        path = path[1:path.index(">")]
+    else:
+        path = re.split(r"\s+", path, maxsplit=1)[0]
+    path = path.split("#", 1)[0].split("?", 1)[0]
+    return unquote(path)
+
+
 def is_chinese_present(text: str) -> bool:
     return re.search(r"[\u4e00-\u9fff]", text) is not None
 
@@ -88,7 +99,10 @@ def main() -> int:
         for target in iter_md_links(content):
             if re.match(r"^(https?:|mailto:|#)", target):
                 continue
-            resolved = (page.parent / target).resolve()
+            path_target = link_path_part(target)
+            if not path_target:
+                continue
+            resolved = (page.parent / path_target).resolve()
             if not resolved.exists():
                 errors.append(f"Broken link: {page} -> {target}")
                 continue
@@ -123,7 +137,7 @@ def main() -> int:
             continue
         for page in folder.glob("*.md"):
             content = read_text(page)
-            if not re.search(r"\((\.\./)?sources/[^)]+\.md\)", content):
+            if not re.search(r"\((\.\./)?sources/[^)\s]+\.md(?:#[^)]+)?\)", content):
                 warnings.append(f"Missing related source link: {page}")
 
     md_targets = [ROOT / "AGENTS.md", ROOT / "README.md"]
